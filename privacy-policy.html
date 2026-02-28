@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0d0f14;
+            --surface: #161920;
+            --border: #252830;
+            --accent: #c8a96e;
+            --text: #e8e6e0;
+            --muted: #8a8880;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 780px;
+            margin: 0 auto;
+        }
+
+        /* Language Selector */
+        .lang-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-bottom: 3rem;
+            padding: 1rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        .lang-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.4rem 0.75rem;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--muted);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .lang-btn:hover { border-color: var(--accent); color: var(--text); }
+        .lang-btn.active { background: var(--accent); border-color: var(--accent); color: #0d0f14; font-weight: 500; }
+        .lang-btn .flag { font-size: 1rem; }
+
+        /* Header */
+        header {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .eyebrow {
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            line-height: 1.15;
+            color: var(--text);
+        }
+
+        .updated {
+            margin-top: 0.75rem;
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        /* Content */
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+        }
+
+        .section p {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: #c5c3bc;
+            font-weight: 300;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.3rem 0.7rem;
+            background: rgba(200,169,110,0.1);
+            border: 1px solid rgba(200,169,110,0.3);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--accent);
+            margin-top: 1rem;
+        }
+
+        /* Hidden content */
+        [data-lang] { display: none; }
+        [data-lang].visible { display: block; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- Language Selector -->
+    <div class="lang-bar">
+        <button class="lang-btn active" onclick="setLang('en')"><span class="flag">🇬🇧</span> English</button>
+        <button class="lang-btn" onclick="setLang('tr')"><span class="flag">🇹🇷</span> Türkçe</button>
+        <button class="lang-btn" onclick="setLang('fr')"><span class="flag">🇫🇷</span> Français</button>
+        <button class="lang-btn" onclick="setLang('es')"><span class="flag">🇪🇸</span> Español</button>
+        <button class="lang-btn" onclick="setLang('pt')"><span class="flag">🇧🇷</span> Português</button>
+        <button class="lang-btn" onclick="setLang('de')"><span class="flag">🇩🇪</span> Deutsch</button>
+        <button class="lang-btn" onclick="setLang('ru')"><span class="flag">🇷🇺</span> Русский</button>
+        <button class="lang-btn" onclick="setLang('ar')"><span class="flag">🇸🇦</span> العربية</button>
+        <button class="lang-btn" onclick="setLang('hi')"><span class="flag">🇮🇳</span> हिन्दी</button>
+        <button class="lang-btn" onclick="setLang('ja')"><span class="flag">🇯🇵</span> 日本語</button>
+        <button class="lang-btn" onclick="setLang('zh')"><span class="flag">🇨🇳</span> 中文</button>
+    </div>
+
+    <!-- ENGLISH -->
+    <div data-lang="en" class="visible">
+        <header>
+            <p class="eyebrow">Legal Document</p>
+            <h1>Privacy Policy</h1>
+            <p class="updated">Last updated: 2025</p>
+        </header>
+        <div class="section">
+            <h2>Advertisement Services</h2>
+            <p>This application uses Google AdMob to serve advertisements. AdMob may use your device's advertising ID for ad personalization and performance measurement.</p>
+            <div class="badge">📡 Google AdMob</div>
+        </div>
+        <div class="section">
+            <h2>Data Usage</h2>
+            <p>By using our application, you agree to the data processing practices described herein. Your advertising ID may be used to deliver relevant ads and measure their effectiveness.</p>
+        </div>
+        <div class="section">
+            <h2>Your Consent</h2>
+            <p>Continued use of this application constitutes your acceptance of these data processing terms. You may opt out of personalized advertising through your device settings at any time.</p>
+        </div>
+    </div>
+
+    <!-- TURKISH -->
+    <div data-lang="tr">
+        <header>
+            <p class="eyebrow">Yasal Belge</p>
+            <h1>Gizlilik Politikası</h1>
+            <p class="updated">Son güncelleme: 2025</p>
+        </header>
+        <div class="section">
+            <h2>Reklam Hizmetleri</h2>
+            <p>Bu uygulama, reklam sunumu için Google AdMob hizmetini kullanmaktadır. AdMob, reklam kişiselleştirme ve performans ölçümü amacıyla cihazınızın reklam kimliğini kullanabilir.</p>
+            <div class="badge">📡 Google AdMob</div>
+        </div>
+        <div class="section">
+            <h2>Veri Kullanımı</h2>
+            <p>Uygulamamızı kullanarak bu veri işleme süreçlerini kabul etmiş sayılırsınız. Reklam kimliğiniz, alakalı reklamlar sunmak ve etkinliklerini ölçmek için kullanılabilir.</p>
+        </div>
+        <div class="section">
+            <h2>Onayınız</h2>
+            <p>Uygulamayı kullanmaya devam etmeniz, bu veri işleme koşullarını kabul ettiğiniz anlamına gelir. Cihaz ayarlarından kişiselleştirilmiş reklamları istediğiniz zaman devre dışı bırakabilirsiniz.</p>
+        </div>
+    </div>
+
+    <!-- FRENCH -->
+    <div data-lang="fr">
+        <header>
+            <p class="eyebrow">Document Légal</p>
+            <h1>Politique de Confidentialité</h1>
+            <p class="updated">Dernière mise à jour : 2025</p>
+        </header>
+        <div class="section">
+            <h2>Services Publicitaires</h2>
+            <p>Cette application utilise Google AdMob pour diffuser des publicités. AdMob peut utiliser l'identifiant publicitaire de votre appareil à des fins de personnalisation et de mesure des performances.</p>
+            <div class="badge">📡 Google AdMob</div>
+        </div>
+        <div class="section">
+            <h2>Utilisation des Données</h2>
+            <p>En utilisant notre application, vous acceptez les pratiques de traitement des données décrites ici. Votre identifiant publicitaire peut être utilisé pour diffuser des publicités pertinentes et mesurer leur efficacité.</p>
+        </div>
+        <div class="section">
+            <h2>Votre Consentement</h2>
+            <p>L'utilisation continue de cette application constitue votre acceptation de ces conditions. Vous pouvez désactiver la publicité personnalisée à tout moment dans les paramètres de votre appareil.</p>
+        </div>
+    </div>
+
+    <!-- SPANISH -->
+    <div data-lang="es">
+        <header>
+            <p class="eyebrow">Documento Legal</p>
+            <h1>Política de Privacidad</h1>
+            <p class="updated">Última actualización: 2025</p>
+        </header>
+        <div class="section">
+            <h2>Servicios Publicitarios</h2>
+            <p>Esta aplicación utiliza Google AdMob para mostrar anuncios. AdMob puede usar el identificador publicitario de su dispositivo para la personalización de anuncios y la medición del rendimiento.</p>
+            <div class="badge">📡 Google AdMob</div>
+        </div>
+        <div class="section">
+            <h2>Uso de Datos</h2>
+            <p>Al usar nuestra aplicación, usted acepta las prácticas de procesamiento de datos aquí descritas. Su ID publicitario puede usarse para mostrar anuncios relevantes y medir su efectividad.</p>
+        </div>
+        <div class="section">
+            <h2>Su Consentimiento</h2>
+            <p>El uso continuado de esta aplicación constituye su aceptación de estos términos. Puede optar por no recibir publicidad personalizada en cualquier momento desde la configuración de su dispositivo.</p>
+        </div>
+    </div>
+
+    <!-- PORTUGUESE -->
+    <div data-lang="pt">
+        <header>
+            <p class="eyebrow">Documento Legal</p>
+            <h1>Política de Privacidade</h1>
+            <p class="updated">Última atualização: 2025</p>
+        </header>
+        <div class="section">
+            <h2>Serviços de Publicidade</h2>
+            <p>Este aplicativo usa o Google AdMob para exibir anúncios. O AdMob pode usar o ID de publicidade do seu dispositivo para personalização de anúncios e medição de desempenho.</p>
+            <div class="badge">📡 Google AdMob</div>
+        </div>
+        <div class="section">
+            <h2>Uso de Dados</h2>
+            <p>Ao usar nosso aplicativo, você concorda com as práticas de processamento de dados aqui descritas. Seu ID de publicidade pode ser usado para exibir anúncios relevantes e medir sua eficácia.</p>
+        </div>
+        <div class="section">
+            <h2>Seu Consentimento</h2>
+            <p>O uso contínuo deste aplicativo constitui sua aceitação destes termos. Você pode optar por não receber publicidade personalizada a qualquer momento nas configurações do seu dispositivo.</p>
+        </div>
+    </div>
+
+    <!-- GERMAN -->
+    <div data-lang="de">
+        <header>
+            <p class="eyebrow">Rechtliches Dokument</p>
+            <h1>Datenschutzerklärung</h1>
+            <p class="updated">Zuletzt aktualisiert: 2025</p>
+        </header>
+        <div class="section">
+            <h2>Werbedienste</h2>
+            <p>Diese App verwendet Google AdMob zur Schaltung von Werbung. AdMob kann die Werbe-ID Ihres Geräts zur Anzeigenpersonalisierung und Leistungsmessung verwenden.</p>
+            <div class="badge">📡 Google AdMob</div>
+        </div>
+        <div class="section">
+            <h2>Datennutzung</h2>
+            <p>Durch die Nutzung unserer App stimmen Sie den hier beschriebenen Datenverarbeitungspraktiken zu. Ihre Werbe-ID kann verwendet werden, um relevante Anzeigen zu schalten und deren Wirksamkeit zu messen.</p>
+        </div>
+        <div class="section">
+            <h2>Ihre Einwilligung</h2>
+            <p>Die weitere Nutzung dieser App gilt als Ihre Zustimmung zu diesen Bedingungen. Sie können die personalisierte Werbung jederzeit in den Geräteeinstellungen deaktivieren.</p>
+        </div>
+    </div>
+
+    <!-- RUSSIAN -->
+    <div data-lang="ru">
+        <header>
+            <p class="eyebrow">Юридический документ</p>
+            <h1>Политика конфиденциальности</h1>
+            <p class="updated">Последнее обновление: 2025</p>
+        </header>
+        <div class="section">
+            <h2>Рекламные сервисы</h2>
+            <p>Это приложение использует Google AdMob для показа рекламы. AdMob может использовать рекламный идентификатор вашего устройства для персонализации рекламы и измерения её эффективности.</p>
+            <div class="badge">📡 Google AdMob</div>
+        </div>
+        <div class="section">
+            <h2>Использование данных</h2>
+            <p>Используя наше приложение, вы соглашаетесь с описанными здесь практиками обработки данных. Ваш рекламный идентификатор может использоваться для показа релевантной рекламы.</p>
+        </div>
+        <div class="section">
+            <h2>Ваше согласие</h2>
+            <p>Продолжение использования приложения означает ваше согласие с этими условиями. Вы можете отказаться от персонализированной рекламы в настройках устройства в любое время.</p>
+        </div>
+    </div>
+
+    <!-- ARABIC -->
+    <div data-lang="ar" dir="rtl" style="text-align:right;">
+        <header>
+            <p class="eyebrow">وثيقة قانونية</p>
+            <h1>سياسة الخصوصية</h1>
+            <p class="updated">آخر تحديث: 2025</p>
+        </header>
+        <div class="section">
+            <h2>خدمات الإعلانات</h2>
+            <p>يستخدم هذا التطبيق Google AdMob لعرض الإعلانات. قد يستخدم AdMob معرّف الإعلان الخاص بجهازك لتخصيص الإعلانات وقياس الأداء.</p>
+            <div class="badge">📡 Google AdMob</div>
+        </div>
+        <div class="section">
+            <h2>استخدام البيانات</h2>
+            <p>باستخدامك لتطبيقنا، فإنك توافق على ممارسات معالجة البيانات الموضحة هنا. قد يُستخدم معرّف إعلانك لعرض إعلانات ذات صلة وقياس فعاليتها.</p>
+        </div>
+        <div class="section">
+            <h2>موافقتك</h2>
+            <p>استمرارك في استخدام هذا التطبيق يُعدّ قبولاً منك لهذه الشروط. يمكنك إلغاء الإعلانات المخصصة في أي وقت من إعدادات جهازك.</p>
+        </div>
+    </div>
+
+    <!-- HINDI -->
+    <div data-lang="hi">
+        <header>
+            <p class="eyebrow">कानूनी दस्तावेज़</p>
+            <h1>गोपनीयता नीति</h1>
+            <p class="updated">अंतिम अपडेट: 2025</p>
+        </header>
+        <div class="section">
+            <h2>विज्ञापन सेवाएँ</h2>
+            <p>यह ऐप विज्ञापन दिखाने के लिए Google AdMob का उपयोग करता है। AdMob विज्ञापन वैयक्तिकरण और प्रदर्शन मापन के लिए आपके डिवाइस की विज्ञापन ID का उपयोग कर सकता है।</p>
+            <div class="badge">📡 Google AdMob</div>
+        </div>
+        <div class="section">
+            <h2>डेटा उपयोग</h2>
+            <p>हमारे ऐप का उपयोग करके, आप यहाँ वर्णित डेटा प्रसंस्करण प्रथाओं से सहमत होते हैं। आपकी विज्ञापन ID का उपयोग प्रासंगिक विज्ञापन दिखाने के लिए किया जा सकता है।</p>
+        </div>
+        <div class="section">
+            <h2>आपकी सहमति</h2>
+            <p>इस ऐप का उपयोग जारी रखना इन शर्तों की आपकी स्वीकृति मानी जाएगी। आप किसी भी समय डिवाइस सेटिंग्स से वैयक्तिकृत विज्ञापन बंद कर सकते हैं।</p>
+        </div>
+    </div>
+
+    <!-- JAPANESE -->
+    <div data-lang="ja">
+        <header>
+            <p class="eyebrow">法的文書</p>
+            <h1>プライバシーポリシー</h1>
+            <p class="updated">最終更新：2025年</p>
+        </header>
+        <div class="section">
+            <h2>広告サービス</h2>
+            <p>本アプリは広告配信にGoogle AdMobを使用しています。AdMobは広告のパーソナライズおよびパフォーマンス測定のため、お使いのデバイスの広告IDを使用することがあります。</p>
+            <div class="badge">📡 Google AdMob</div>
+        </div>
+        <div class="section">
+            <h2>データの利用</h2>
+            <p>本アプリをご利用いただくことで、ここに記載されたデータ処理に同意したものとみなされます。広告IDは関連性の高い広告の配信と効果測定に使用される場合があります。</p>
+        </div>
+        <div class="section">
+            <h2>お客様の同意</h2>
+            <p>本アプリの継続使用は、これらの利用規約への同意とみなされます。端末の設定からいつでもパーソナライズド広告をオプトアウトすることができます。</p>
+        </div>
+    </div>
+
+    <!-- CHINESE -->
+    <div data-lang="zh">
+        <header>
+            <p class="eyebrow">法律文件</p>
+            <h1>隐私政策</h1>
+            <p class="updated">最后更新：2025年</p>
+        </header>
+        <div class="section">
+            <h2>广告服务</h2>
+            <p>本应用使用 Google AdMob 投放广告。AdMob 可能会使用您设备的广告标识符进行广告个性化和效果衡量。</p>
+            <div class="badge">📡 Google AdMob</div>
+        </div>
+        <div class="section">
+            <h2>数据使用</h2>
+            <p>使用本应用即表示您同意此处描述的数据处理方式。您的广告 ID 可能被用于投放相关广告并衡量其效果。</p>
+        </div>
+        <div class="section">
+            <h2>您的同意</h2>
+            <p>继续使用本应用即视为您接受这些数据处理条款。您可随时在设备设置中关闭个性化广告。</p>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function setLang(lang) {
+        document.querySelectorAll('[data-lang]').forEach(el => el.classList.remove('visible'));
+        document.querySelector('[data-lang="' + lang + '"]').classList.add('visible');
+        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+
+        // RTL support
+        document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+    }
+</script>
+</body>
+</html>
