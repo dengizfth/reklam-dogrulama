@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio — Kişisel Sayfa</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --panel: #161616;
+    --border: #2a2a2a;
+    --accent: #c8f564;
+    --accent2: #f56464;
+    --text: #e8e8e0;
+    --muted: #666;
+    --sidebar-w: 280px;
+    --sidebar-collapsed: 60px;
+    --transition: 0.45s cubic-bezier(0.77, 0, 0.175, 1);
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    overflow: hidden;
+  }
+
+  /* ── LAYOUT ── */
+  .layout {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: var(--sidebar-w);
+    min-width: var(--sidebar-w);
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 100;
+    transition: width var(--transition), min-width var(--transition);
+    overflow: hidden;
+  }
+
+  .sidebar.collapsed {
+    width: var(--sidebar-collapsed);
+    min-width: var(--sidebar-collapsed);
+  }
+
+  /* Toggle button */
+  .sidebar-toggle {
+    position: absolute;
+    top: 20px;
+    right: -14px;
+    width: 28px;
+    height: 28px;
+    background: var(--accent);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    transition: transform 0.3s ease, background 0.2s;
+  }
+  .sidebar-toggle:hover { background: #b5e040; }
+  .sidebar-toggle svg {
+    width: 12px; height: 12px;
+    transition: transform var(--transition);
+  }
+  .sidebar.collapsed .sidebar-toggle svg { transform: rotate(180deg); }
+
+  /* Logo / Brand */
+  .sidebar-brand {
+    padding: 28px 20px 20px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .brand-initials {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--accent);
+    letter-spacing: 3px;
+    line-height: 1;
+  }
+  .brand-full {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    margin-top: 4px;
+    opacity: 1;
+    transition: opacity var(--transition);
+  }
+  .sidebar.collapsed .brand-full { opacity: 0; }
+
+  /* Nav */
+  .sidebar-nav {
+    flex: 1;
+    padding: 16px 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .nav-item {
+    position: relative;
+  }
+
+  .nav-btn {
+    width: 100%;
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 20px;
+    transition: color 0.2s, background 0.2s;
+    white-space: nowrap;
+    overflow: hidden;
+    position: relative;
+  }
+  .nav-btn:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+  .nav-btn.active { color: var(--accent); }
+  .nav-btn.active .nav-icon { color: var(--accent); }
+
+  .nav-icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+  }
+  .nav-icon svg { width: 18px; height: 18px; }
+
+  .nav-label {
+    transition: opacity var(--transition);
+    flex: 1;
+    text-align: left;
+  }
+  .sidebar.collapsed .nav-label { opacity: 0; pointer-events: none; }
+
+  .nav-arrow {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    transition: transform 0.3s ease, opacity var(--transition);
+  }
+  .nav-arrow svg { width: 16px; height: 16px; }
+  .sidebar.collapsed .nav-arrow { opacity: 0; }
+  .nav-btn.open .nav-arrow { transform: rotate(90deg); }
+
+  /* Active left bar */
+  .nav-btn.active::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 50%;
+    transform: translateY(-50%);
+    width: 3px; height: 60%;
+    background: var(--accent);
+    border-radius: 0 2px 2px 0;
+  }
+
+  /* Sidebar tooltip (collapsed state) */
+  .nav-btn .tooltip {
+    position: absolute;
+    left: calc(var(--sidebar-collapsed) + 8px);
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--panel);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 10px;
+    letter-spacing: 2px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    z-index: 300;
+  }
+  .sidebar.collapsed .nav-btn:hover .tooltip { opacity: 1; }
+
+  /* ── MAIN CONTENT ── */
+  .main {
+    flex: 1;
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    scroll-behavior: smooth;
+  }
+
+  /* Noise texture overlay */
+  .main::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 60px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-eyebrow {
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s ease forwards;
+  }
+
+  .hero-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(64px, 10vw, 140px);
+    line-height: 0.9;
+    letter-spacing: -2px;
+    color: var(--text);
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.4s ease forwards;
+  }
+  .hero-name span { color: var(--accent); }
+
+  .hero-desc {
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--muted);
+    max-width: 420px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.6s ease forwards;
+  }
+
+  .hero-cta {
+    margin-top: 48px;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.8s ease forwards;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0a0a0a;
+    border: 2px solid var(--accent);
+  }
+  .btn-primary:hover { background: transparent; color: var(--accent); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    border: 2px solid var(--border);
+  }
+  .btn-ghost:hover { border-color: var(--text); color: var(--text); }
+
+  /* Corner decoration */
+  .hero-deco {
+    position: absolute;
+    right: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 200px;
+    height: 200px;
+    opacity: 0.06;
+    pointer-events: none;
+  }
+
+  /* ── SECTIONS ── */
+  .section {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Section panel */
+  .section-panel {
+    border-top: 1px solid var(--border);
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.6s cubic-bezier(0.77, 0, 0.175, 1);
+  }
+  .section-panel.open { max-height: 2000px; }
+
+  .section-inner {
+    padding: 60px 60px 80px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s 0.15s ease, transform 0.5s 0.15s ease;
+  }
+  .section-panel.open .section-inner {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Section header (clickable in main) */
+  .section-header-main {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 32px 60px;
+    cursor: pointer;
+    border-top: 1px solid var(--border);
+    position: relative;
+    transition: background 0.2s;
+    z-index: 1;
+  }
+  .section-header-main:hover { background: rgba(255,255,255,0.02); }
+  .section-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    opacity: 0.5;
+  }
+  .section-title-main {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 3px;
+    color: var(--text);
+    flex: 1;
+  }
+  .section-chevron {
+    width: 24px; height: 24px;
+    color: var(--muted);
+    transition: transform 0.4s ease, color 0.2s;
+  }
+  .section-header-main.open .section-chevron {
+    transform: rotate(180deg);
+    color: var(--accent);
+  }
+
+  /* ── PROJELER ── */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .project-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+  .project-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .project-card:hover::before { transform: scaleX(1); }
+
+  .project-tag {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .project-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    color: var(--text);
+    margin-bottom: 10px;
+    line-height: 1.3;
+  }
+  .project-desc {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+  .project-stack {
+    margin-top: 20px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .stack-badge {
+    font-size: 9px;
+    letter-spacing: 1px;
+    padding: 4px 8px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 2px;
+  }
+
+  /* ── HAKKIMDA ── */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+  }
+  @media (max-width: 800px) { .about-grid { grid-template-columns: 1fr; } }
+
+  .about-text p {
+    font-size: 13px;
+    line-height: 1.9;
+    color: var(--muted);
+    margin-bottom: 18px;
+  }
+  .about-text p strong { color: var(--text); font-weight: 500; }
+
+  .skills-list { display: flex; flex-direction: column; gap: 16px; }
+  .skill-row { display: flex; flex-direction: column; gap: 6px; }
+  .skill-name {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+  }
+  .skill-name span { color: var(--accent); }
+  .skill-bar {
+    height: 2px;
+    background: var(--border);
+    border-radius: 1px;
+    overflow: hidden;
+  }
+  .skill-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 1px;
+    width: 0;
+    transition: width 1s 0.3s ease;
+  }
+  .section-panel.open .skill-fill { width: var(--w); }
+
+  /* ── İLETİŞİM ── */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+  }
+  @media (max-width: 800px) { .contact-grid { grid-template-columns: 1fr; } }
+
+  .contact-info { display: flex; flex-direction: column; gap: 24px; }
+  .contact-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .contact-icon {
+    width: 36px; height: 36px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--accent);
+  }
+  .contact-detail { display: flex; flex-direction: column; gap: 4px; }
+  .contact-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .contact-val {
+    font-size: 13px;
+    color: var(--text);
+  }
+
+  .contact-form { display: flex; flex-direction: column; gap: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 8px; }
+  .form-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .form-input, .form-textarea {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    padding: 12px 16px;
+    border-radius: 2px;
+    outline: none;
+    transition: border-color 0.2s;
+    resize: none;
+  }
+  .form-input:focus, .form-textarea:focus { border-color: var(--accent); }
+  .form-textarea { height: 120px; }
+
+  /* ── FOOTER ── */
+  .footer {
+    padding: 40px 60px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Scrollbar */
+  .main::-webkit-scrollbar { width: 4px; }
+  .main::-webkit-scrollbar-track { background: transparent; }
+  .main::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  .main::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="sidebar" id="sidebar">
+
+    <button class="sidebar-toggle" id="sidebarToggle" title="Menüyü Aç/Kapat">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+    </button>
+
+    <div class="sidebar-brand">
+      <div class="brand-initials">AD</div>
+      <div class="brand-full">Adın Soyadın</div>
+    </div>
+
+    <nav class="sidebar-nav">
+
+      <div class="nav-item">
+        <button class="nav-btn" data-target="projeler">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+              <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+            </svg>
+          </span>
+          <span class="nav-label">Projeler</span>
+          <span class="nav-arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </span>
+          <span class="tooltip">Projeler</span>
+        </button>
+      </div>
+
+      <div class="nav-item">
+        <button class="nav-btn" data-target="hakkimda">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+            </svg>
+          </span>
+          <span class="nav-label">Hakkımda</span>
+          <span class="nav-arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </span>
+          <span class="tooltip">Hakkımda</span>
+        </button>
+      </div>
+
+      <div class="nav-item">
+        <button class="nav-btn" data-target="iletisim">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+          </span>
+          <span class="nav-label">İletişim</span>
+          <span class="nav-arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </span>
+          <span class="tooltip">İletişim</span>
+        </button>
+      </div>
+
+    </nav>
+
+    <div style="padding:20px; border-top:1px solid var(--border); white-space:nowrap; overflow:hidden;">
+      <div style="font-size:9px; letter-spacing:2px; color:var(--muted); opacity:1; transition:opacity var(--transition);" class="sidebar-foot-label">— Kişisel Portfolio</div>
+    </div>
+
+  </aside>
+
+  <!-- ══ MAIN ══ -->
+  <main class="main" id="main">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-eyebrow">⬡ Hoş Geldiniz</div>
+      <h1 class="hero-name">Adın<br><span>Soyadın</span></h1>
+      <p class="hero-desc">
+        Full-stack geliştirici & tasarımcı. Güzel, işlevsel ve hızlı dijital deneyimler üretmeye odaklanıyorum.
+      </p>
+      <div class="hero-cta">
+        <button class="btn btn-primary" onclick="openSection('projeler')">Projeleri Gör</button>
+        <button class="btn btn-ghost" onclick="openSection('iletisim')">İletişime Geç</button>
+      </div>
+
+      <!-- Deco SVG -->
+      <svg class="hero-deco" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="100,10 190,55 190,145 100,190 10,145 10,55" stroke="white" stroke-width="1" fill="none"/>
+        <polygon points="100,30 170,65 170,135 100,170 30,135 30,65" stroke="white" stroke-width="1" fill="none"/>
+        <polygon points="100,50 150,75 150,125 100,150 50,125 50,75" stroke="white" stroke-width="1" fill="none"/>
+        <circle cx="100" cy="100" r="6" fill="white"/>
+      </svg>
+    </section>
+
+    <!-- ── PROJELER ── -->
+    <section class="section" id="section-projeler">
+      <div class="section-header-main" data-target="projeler">
+        <span class="section-number">01</span>
+        <span class="section-title-main">Projeler</span>
+        <svg class="section-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </div>
+      <div class="section-panel" id="panel-projeler">
+        <div class="section-inner">
+          <div class="projects-grid">
+
+            <div class="project-card">
+              <div class="project-tag">Web App</div>
+              <div class="project-name">Proje Adı Bir</div>
+              <div class="project-desc">Bu projenin kısa açıklaması buraya gelir. Ne yaptığını, hangi problemi çözdüğünü anlat.</div>
+              <div class="project-stack">
+                <span class="stack-badge">React</span>
+                <span class="stack-badge">Node.js</span>
+                <span class="stack-badge">MongoDB</span>
+              </div>
+            </div>
+
+            <div class="project-card">
+              <div class="project-tag">Mobile</div>
+              <div class="project-name">Proje Adı İki</div>
+              <div class="project-desc">Mobil uygulama projesi hakkında kısa bir açıklama. Kullanıcıya ne kazandırdığını yaz.</div>
+              <div class="project-stack">
+                <span class="stack-badge">Flutter</span>
+                <span class="stack-badge">Firebase</span>
+              </div>
+            </div>
+
+            <div class="project-card">
+              <div class="project-tag">API / Backend</div>
+              <div class="project-name">Proje Adı Üç</div>
+              <div class="project-desc">Backend veya API projesi açıklaması buraya. Mimariyi ve teknolojiyi özetle.</div>
+              <div class="project-stack">
+                <span class="stack-badge">Python</span>
+                <span class="stack-badge">FastAPI</span>
+                <span class="stack-badge">PostgreSQL</span>
+              </div>
+            </div>
+
+            <div class="project-card">
+              <div class="project-tag">UI / Design</div>
+              <div class="project-name">Proje Adı Dört</div>
+              <div class="project-desc">Tasarım odaklı bir proje açıklaması. Kullandığın araçları ve süreci anlat.</div>
+              <div class="project-stack">
+                <span class="stack-badge">Figma</span>
+                <span class="stack-badge">HTML/CSS</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── HAKKIMDA ── -->
+    <section class="section" id="section-hakkimda">
+      <div class="section-header-main" data-target="hakkimda">
+        <span class="section-number">02</span>
+        <span class="section-title-main">Hakkımda</span>
+        <svg class="section-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </div>
+      <div class="section-panel" id="panel-hakkimda">
+        <div class="section-inner">
+          <div class="about-grid">
+            <div class="about-text">
+              <p>Merhaba, ben <strong>Adın Soyadın</strong>. Yazılım geliştirme ve tasarım alanında X yıldır çalışıyorum. Kullanıcı odaklı, temiz ve sürdürülebilir kodlar yazmayı seviyorum.</p>
+              <p>Kariyerim boyunca <strong>startup'lardan büyük kurumlara</strong> kadar farklı ölçeklerde projeler geliştirdim. Her projede hem teknik kaliteyi hem de kullanıcı deneyimini ön planda tutuyorum.</p>
+              <p>Boş zamanlarımda açık kaynak projelere katkı sağlıyor, yeni teknolojileri keşfediyor ve teknik yazılar yazıyorum. Burada kendi dünyamı seninle paylaşmaktan mutluluk duyuyorum.</p>
+            </div>
+            <div class="skills-list">
+              <div class="skill-row">
+                <div class="skill-name">JavaScript / TypeScript <span>90%</span></div>
+                <div class="skill-bar"><div class="skill-fill" style="--w:90%"></div></div>
+              </div>
+              <div class="skill-row">
+                <div class="skill-name">React / Next.js <span>85%</span></div>
+                <div class="skill-bar"><div class="skill-fill" style="--w:85%"></div></div>
+              </div>
+              <div class="skill-row">
+                <div class="skill-name">Node.js / Python <span>80%</span></div>
+                <div class="skill-bar"><div class="skill-fill" style="--w:80%"></div></div>
+              </div>
+              <div class="skill-row">
+                <div class="skill-name">UI/UX Tasarım <span>75%</span></div>
+                <div class="skill-bar"><div class="skill-fill" style="--w:75%"></div></div>
+              </div>
+              <div class="skill-row">
+                <div class="skill-name">DevOps / Cloud <span>65%</span></div>
+                <div class="skill-bar"><div class="skill-fill" style="--w:65%"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── İLETİŞİM ── -->
+    <section class="section" id="section-iletisim">
+      <div class="section-header-main" data-target="iletisim">
+        <span class="section-number">03</span>
+        <span class="section-title-main">İletişim</span>
+        <svg class="section-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </div>
+      <div class="section-panel" id="panel-iletisim">
+        <div class="section-inner">
+          <div class="contact-grid">
+            <div class="contact-info">
+              <div class="contact-row">
+                <div class="contact-icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+                  </svg>
+                </div>
+                <div class="contact-detail">
+                  <div class="contact-label">E-Posta</div>
+                  <div class="contact-val">ornek@email.com</div>
+                </div>
+              </div>
+              <div class="contact-row">
+                <div class="contact-icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                  </svg>
+                </div>
+                <div class="contact-detail">
+                  <div class="contact-label">GitHub</div>
+                  <div class="contact-val">github.com/kullanici</div>
+                </div>
+              </div>
+              <div class="contact-row">
+                <div class="contact-icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
+                  </svg>
+                </div>
+                <div class="contact-detail">
+                  <div class="contact-label">LinkedIn</div>
+                  <div class="contact-val">linkedin.com/in/kullanici</div>
+                </div>
+              </div>
+            </div>
+
+            <form class="contact-form" onsubmit="return false;">
+              <div class="form-group">
+                <label class="form-label">Ad Soyad</label>
+                <input class="form-input" type="text" placeholder="Adınız Soyadınız">
+              </div>
+              <div class="form-group">
+                <label class="form-label">E-Posta</label>
+                <input class="form-input" type="email" placeholder="ornek@email.com">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Mesaj</label>
+                <textarea class="form-textarea" placeholder="Merhaba, seninle..."></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary" style="align-self:flex-start;">Gönder →</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <span>© 2025 Adın Soyadın</span>
+      <span>Kişisel Portfolio</span>
+    </footer>
+
+  </main>
+</div>
+
+<script>
+$(function () {
+
+  // ── Sidebar Toggle ──
+  $('#sidebarToggle').on('click', function () {
+    $('#sidebar').toggleClass('collapsed');
+  });
+
+  // ── Open/Close section function ──
+  function toggleSection(target, scrollTo) {
+    const panel = $('#panel-' + target);
+    const isOpen = panel.hasClass('open');
+
+    // Toggle panel
+    if (isOpen) {
+      panel.removeClass('open');
+      $('.section-header-main[data-target="' + target + '"]').removeClass('open');
+      $('.nav-btn[data-target="' + target + '"]').removeClass('active open');
+    } else {
+      panel.addClass('open');
+      $('.section-header-main[data-target="' + target + '"]').addClass('open');
+      $('.nav-btn[data-target="' + target + '"]').addClass('active open');
+
+      if (scrollTo !== false) {
+        setTimeout(function () {
+          const sectionTop = $('#section-' + target)[0].offsetTop;
+          $('#main').animate({ scrollTop: sectionTop - 20 }, 500);
+        }, 100);
+      }
+    }
+  }
+
+  // ── Sidebar nav buttons ──
+  $('.nav-btn[data-target]').on('click', function () {
+    const target = $(this).data('target');
+    toggleSection(target, true);
+    // Expand sidebar if collapsed
+    if ($('#sidebar').hasClass('collapsed')) {
+      $('#sidebar').removeClass('collapsed');
+    }
+  });
+
+  // ── Main section headers ──
+  $('.section-header-main').on('click', function () {
+    const target = $(this).data('target');
+    toggleSection(target, false);
+  });
+
+  // Global function for CTA buttons
+  window.openSection = function (target) {
+    const panel = $('#panel-' + target);
+    if (!panel.hasClass('open')) {
+      toggleSection(target, true);
+    } else {
+      const sectionTop = $('#section-' + target)[0].offsetTop;
+      $('#main').animate({ scrollTop: sectionTop - 20 }, 500);
+    }
+  };
+
+});
+</script>
+</body>
+</html>
